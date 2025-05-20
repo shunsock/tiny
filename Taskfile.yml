@@ -25,3 +25,8 @@ tasks:
     cmds:
       - cargo build
 
+  run:
+    desc: "run application"
+    cmds:
+      - ./tiny/target/debug/tiny
+
