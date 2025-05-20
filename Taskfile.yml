@@ -28,5 +28,5 @@ tasks:
   run:
     desc: "run application"
     cmds:
-      - ./tiny/target/debug/tiny
+      - ./tiny/target/debug/tiny {{ .CLI_ARGS }}
 
