@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  fmt:
+    dir: tiny
+    desc: "Format Code"
+    cmds:
+      - cargo fmt
+
+  lint:
+    dir: tiny
+    desc: "Lint Code"
+    cmds:
+      - cargo clippy
+
+  test:
+    dir: tiny
+    desc: "Test Code"
+    cmds:
+      - cargo test
+
+  build:
+    dir: tiny
+    desc: "Build Package"
+    cmds:
+      - cargo build
+
