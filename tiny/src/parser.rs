@@ -1,10 +1,13 @@
-use crate::tokenizer::{Token, token_to_string};
 use crate::ast::{BinaryOperation, Expr, Stmt};
+use crate::tokenizer::{Token, token_to_string};
 
 #[derive(Debug)]
 pub enum ParseError {
     UnexpectedEOF,
-    UnexpectedToken {expected: Option<Token>, actual: Token },
+    UnexpectedToken {
+        expected: Option<Token>,
+        actual: Token,
+    },
 }
 
 pub fn parse_error_to_message(e: ParseError) -> String {
@@ -14,7 +17,11 @@ pub fn parse_error_to_message(e: ParseError) -> String {
             if expected.is_none() {
                 format!("[Unexpected Token] actual: {}", token_to_string(actual))
             } else {
-                format!("[Unexpected Token] expected: {}, actual: {}", token_to_string(expected.unwrap()), token_to_string(actual))
+                format!(
+                    "[Unexpected Token] expected: {}, actual: {}",
+                    token_to_string(expected.unwrap()),
+                    token_to_string(actual)
+                )
             }
         }
     }
@@ -79,7 +86,7 @@ impl Parser {
             els: Box::new(els),
         })
     }
-    
+
     fn parse_add_expr(&mut self) -> Result<Expr, ParseError> {
         let mut left = self.parse_primary_expr()?;
         while matches!(self.peek(), Some(Token::KeywordPlus)) {
@@ -104,4 +111,3 @@ impl Parser {
         }
     }
 }
-

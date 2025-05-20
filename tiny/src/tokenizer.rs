@@ -38,7 +38,10 @@ impl Tokenizer {
     }
 
     #[tailcall]
-    fn tokenize_recursive(stream: &str, mut tokens: Vec<Token>) -> Result<Vec<Token>, TokenizeError> {
+    fn tokenize_recursive(
+        stream: &str,
+        mut tokens: Vec<Token>,
+    ) -> Result<Vec<Token>, TokenizeError> {
         if stream.is_empty() {
             return Ok(tokens);
         }
@@ -60,18 +63,14 @@ impl Tokenizer {
                 tokens.push(Token::KeywordQuestion);
                 Self::tokenize_recursive(rest, tokens)
             }
-            c if c.is_ascii_digit() => {
-                match parse_int_token(stream, c) {
-                    Ok((token, rest)) => {
-                        tokens.push(token);
-                        Self::tokenize_recursive(rest, tokens)
-                    }
-                    Err(e) => Err(e),
+            c if c.is_ascii_digit() => match parse_int_token(stream, c) {
+                Ok((token, rest)) => {
+                    tokens.push(token);
+                    Self::tokenize_recursive(rest, tokens)
                 }
-            }
-            c if c.is_whitespace() => {
-                Self::tokenize_recursive(rest, tokens)
-            }
+                Err(e) => Err(e),
+            },
+            c if c.is_whitespace() => Self::tokenize_recursive(rest, tokens),
             c => Err(TokenizeError::UnexpectedCharacter(c)),
         }
     }

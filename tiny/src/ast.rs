@@ -5,9 +5,13 @@ pub enum Stmt {
 
 #[derive(Debug, Clone)]
 pub enum Expr {
-    If { cond: Box<Expr>, thn: Box<Expr>, els: Box<Expr> },
+    If {
+        cond: Box<Expr>,
+        thn: Box<Expr>,
+        els: Box<Expr>,
+    },
     Int(i32),
-    BinOp(Box<BinaryOperation>)
+    BinOp(Box<BinaryOperation>),
 }
 
 #[derive(Debug, Clone)]

@@ -1,19 +1,13 @@
 mod ast;
 mod data_type;
-mod tokenizer;
 mod parser;
+mod tokenizer;
 
+use ast::Stmt;
+use parser::{Parser, parse_error_to_message};
 use std::env;
 use std::process::exit;
-use tokenizer::{
-    Tokenizer,
-    tokenize_error_to_message
-};
-use parser::{
-    Parser,
-    parse_error_to_message
-};
-use ast::Stmt;
+use tokenizer::{Tokenizer, tokenize_error_to_message};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,7 +18,7 @@ fn main() {
         Err(e) => {
             println!("{}", tokenize_error_to_message(e));
             exit(1)
-        },
+        }
     };
     println!("{:?}", tokens);
 
