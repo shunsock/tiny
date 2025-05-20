@@ -59,12 +59,12 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Result<Expr, ParseError> {
-        let cond = self.parse_add_expr()?;
+        let expr = self.parse_add_expr()?;
 
         if let Some(Token::KeywordQuestion) = self.peek() {
-            Ok(self.parse_if_expr(cond))?
+            Ok(self.parse_if_expr(expr))?
         } else {
-            Ok(cond)
+            Ok(expr)
         }
     }
     fn parse_if_expr(&mut self, cond: Expr) -> Result<Expr, ParseError> {
@@ -79,6 +79,7 @@ impl Parser {
             els: Box::new(els),
         })
     }
+    
     fn parse_add_expr(&mut self) -> Result<Expr, ParseError> {
         let mut left = self.parse_primary_expr()?;
         while matches!(self.peek(), Some(Token::KeywordPlus)) {
