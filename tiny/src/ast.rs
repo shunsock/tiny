@@ -7,7 +7,6 @@ pub enum Stmt {
 pub enum Expr {
     If { cond: Box<Expr>, thn: Box<Expr>, els: Box<Expr> },
     Int(i32),
-    Float(f32),
     BinOp(Box<BinaryOperation>)
 }
 

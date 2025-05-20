@@ -1,12 +1,20 @@
 use tailcall::tailcall;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     KeywordColon,
-    KeywordIf,
     KeywordPlus,
     KeywordQuestion,
     LiteralInt(i32),
+}
+
+pub fn token_to_string(t: Token) -> String {
+    match t {
+        Token::KeywordColon => String::from(":"),
+        Token::KeywordPlus => String::from("+"),
+        Token::KeywordQuestion => String::from("?"),
+        Token::LiteralInt(i) => format!("{}", i),
+    }
 }
 
 pub enum TokenizeError {
@@ -60,11 +68,6 @@ impl Tokenizer {
                     }
                     Err(e) => Err(e),
                 }
-            }
-            'i' if rest.starts_with('f') => {
-                let rest = &rest[1..];
-                tokens.push(Token::KeywordIf);
-                Self::tokenize_recursive(rest, tokens)
             }
             c if c.is_whitespace() => {
                 Self::tokenize_recursive(rest, tokens)

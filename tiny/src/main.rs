@@ -1,18 +1,36 @@
 mod ast;
 mod data_type;
 mod tokenizer;
+mod parser;
 
 use std::env;
+use std::process::exit;
 use tokenizer::{
     Tokenizer,
     tokenize_error_to_message
 };
+use parser::{
+    Parser,
+    parse_error_to_message
+};
+use ast::Stmt;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("{}", format_args!("{:?}", args));
-    match Tokenizer::tokenize(args[1].as_str()) {
-        Ok(tokens) => println!("{:?}", tokens),
-        Err(e) => println!("{}", tokenize_error_to_message(e)),
-    }
+
+    let tokens = match Tokenizer::tokenize(args[1].as_str()) {
+        Ok(tokens) => tokens,
+        Err(e) => {
+            println!("{}", tokenize_error_to_message(e));
+            exit(1)
+        },
+    };
+    println!("{:?}", tokens);
+
+    let ast: Stmt = Parser::new(tokens).parse().unwrap_or_else(|e| {
+        println!("{}", parse_error_to_message(e));
+        exit(1)
+    });
+    println!("{:?}", ast);
 }
