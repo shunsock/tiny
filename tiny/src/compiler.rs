@@ -1,5 +1,6 @@
 use crate::ast::{BinaryOperation, Expr, Stmt};
 use crate::opcode::OpCode;
+use crate::tiny_object::TinyObject;
 
 #[derive(Debug)]
 pub enum CompileError {
@@ -36,7 +37,7 @@ impl Compiler {
     fn compile_expr(&mut self, expr: Expr) -> Result<(), CompileError> {
         match expr {
             Expr::Int(n) => {
-                self.code.push(OpCode::PushInt(n));
+                self.code.push(OpCode::Push(TinyObject::Int(n)));
                 Ok(())
             }
             Expr::BinOp(boxed_op) => self.compile_binop(*boxed_op),
