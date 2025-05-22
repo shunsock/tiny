@@ -51,7 +51,7 @@ impl VM {
                 OpCode::JumpIfFalse(target) => {
                     let cond: TinyObject = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
                     if Self::evaluate_condition(cond) == false {
-                        if target >= self.code.len() {
+                        if target > self.code.len() {
                             return Err(RuntimeError::InvalidJump);
                         }
                         self.pc = target;
@@ -60,7 +60,7 @@ impl VM {
                     }
                 }
                 OpCode::Jump(target) => {
-                    if target >= self.code.len() {
+                    if target > self.code.len() {
                         return Err(RuntimeError::InvalidJump);
                     }
                     self.pc = target;

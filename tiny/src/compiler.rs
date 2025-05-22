@@ -67,8 +67,8 @@ impl Compiler {
         let else_start: usize = self.code.len();
         self.compile_expr(els)?; // [cond_cmds, JumpIfFalse(0), thn_cmds, Jump(0), els_cmds]
         let end: usize = self.code.len();
-        self.code[jump_if_false_pos] = OpCode::JumpIfFalse(else_start - 1); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(0), els_cmds]
-        self.code[jump_pos] = OpCode::Jump(end - 1); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(end), els_cmds]
+        self.code[jump_if_false_pos] = OpCode::JumpIfFalse(else_start); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(0), els_cmds]
+        self.code[jump_pos] = OpCode::Jump(end); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(end), els_cmds]
         Ok(())
     }
 }
