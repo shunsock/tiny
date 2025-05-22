@@ -43,9 +43,7 @@ fn main() {
         eprintln!("[Runtime Error] {}", runtime_error_to_message(e));
         exit(1)
     });
-    if result.is_none() {
-        println!("{:?}", result.unwrap())
-    }
+    println!("{:?}", result.unwrap());
 
     exit(0);
 }

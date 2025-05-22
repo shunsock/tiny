@@ -6,5 +6,6 @@ pub enum OpCode {
     Add,
     JumpIfFalse(usize),
     Jump(usize),
+    #[allow(dead_code)]
     Pop,
 }

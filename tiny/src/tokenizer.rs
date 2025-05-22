@@ -80,7 +80,7 @@ fn parse_int_token(stream: &str, first: char) -> Result<(Token, &str), TokenizeE
     let mut num = first.to_string();
     let mut consumed = first.len_utf8();
 
-    for (i, c) in stream[consumed..].char_indices() {
+    for (_, c) in stream[consumed..].char_indices() {
         if c.is_ascii_digit() {
             num.push(c);
             consumed += c.len_utf8();

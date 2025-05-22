@@ -13,12 +13,11 @@ pub fn runtime_error_to_message(e: RuntimeError) -> String {
             "stack underflow: not enough values on the stack".to_string()
         }
         RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
-        RuntimeError::TypeError => "type error: incompatible types for operation".to_string(),
     }
 }
 
 pub struct VM {
-    stack: Vec<TinyObject>,
+    pub stack: Vec<TinyObject>,
     pc: usize,
     code: Vec<OpCode>,
 }
@@ -37,6 +36,7 @@ impl VM {
             match self.code[self.pc].clone() {
                 OpCode::Push(obj) => {
                     self.stack.push(obj);
+                    self.pc += 1;
                 }
                 OpCode::Add => {
                     let b = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
@@ -46,15 +46,17 @@ impl VM {
                             self.stack.push(TinyObject::Int(a + b));
                         }
                     }
+                    self.pc += 1;
                 }
                 OpCode::JumpIfFalse(target) => {
                     let cond: TinyObject = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
-                    if Self::evaluate_condition(cond) {
+                    if Self::evaluate_condition(cond) == false {
                         if target >= self.code.len() {
                             return Err(RuntimeError::InvalidJump);
                         }
                         self.pc = target;
-                        continue;
+                    } else {
+                        self.pc += 1;
                     }
                 }
                 OpCode::Jump(target) => {
@@ -62,13 +64,12 @@ impl VM {
                         return Err(RuntimeError::InvalidJump);
                     }
                     self.pc = target;
-                    continue;
                 }
                 OpCode::Pop => {
                     self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
+                    self.pc += 1;
                 }
             }
-            self.pc += 1;
         }
 
         Ok(self.stack.last().cloned())
@@ -76,8 +77,9 @@ impl VM {
 
     fn evaluate_condition(obj: TinyObject) -> bool {
         match obj {
-            TinyObject::Int(n) if n > 0 => true,
-            _ => false,
+            TinyObject::Int(n) => n > 0,
+            #[allow(unreachable_patterns)]
+            _ => false, // we use this in future
         }
     }
 }
