@@ -1,5 +1,5 @@
+use crate::ast::{BinaryOperation, Expr, Stmt};
 use crate::opcode::OpCode;
-use crate::ast::{Stmt, Expr, BinaryOperation};
 
 #[derive(Debug)]
 pub enum CompileError {
@@ -8,7 +8,9 @@ pub enum CompileError {
 
 pub fn compile_error_to_message(e: CompileError) -> String {
     match e {
-        CompileError::UnsupportedExpr => "unsupported expression encountered during compilation".to_string(),
+        CompileError::UnsupportedExpr => {
+            "unsupported expression encountered during compilation".to_string()
+        }
     }
 }
 
@@ -53,12 +55,7 @@ impl Compiler {
         }
     }
 
-    fn compile_if(
-        &mut self,
-        cond: &Expr,
-        thn: &Expr,
-        els: &Expr,
-    ) -> Result<(), CompileError> {
+    fn compile_if(&mut self, cond: &Expr, thn: &Expr, els: &Expr) -> Result<(), CompileError> {
         self.compile_expr(cond)?;
 
         let jump_if_false_pos = self.code.len();
