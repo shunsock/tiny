@@ -56,22 +56,17 @@ impl Compiler {
     }
 
     fn compile_if(&mut self, cond: Expr, thn: Expr, els: Expr) -> Result<(), CompileError> {
-        self.compile_expr(cond)?;
-
-        let jump_if_false_pos = self.code.len();
-        self.code.push(OpCode::JumpIfFalse(0));
-
-        self.compile_expr(thn)?;
+        self.compile_expr(cond)?; // [cond_cmds]
+        let jump_if_false_pos: usize = self.code.len();
+        self.code.push(OpCode::JumpIfFalse(0)); // [cond_cmds, JumpIfFalse(0)]
+        self.compile_expr(thn)?; // [cond_cmds, JumpIfFalse(0), thn_cmds ]
         let jump_pos: usize = self.code.len();
-        self.code.push(OpCode::Jump(0));
-
+        self.code.push(OpCode::Jump(0)); // [cond_cmds, JumpIfFalse(0), thn_cmds, Jump(0)]
         let else_start: usize = self.code.len();
-        self.compile_expr(els)?;
-
+        self.compile_expr(els)?; // [cond_cmds, JumpIfFalse(0), thn_cmds, Jump(0), els_cmds]
         let end: usize = self.code.len();
-        self.code[jump_if_false_pos] = OpCode::JumpIfFalse(else_start);
-        self.code[jump_pos] = OpCode::Jump(end);
-
+        self.code[jump_if_false_pos] = OpCode::JumpIfFalse(else_start); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(0), els_cmds]
+        self.code[jump_pos] = OpCode::Jump(end); // [cond_cmds, JumpIfFalse(els_start), thn_cmds, Jump(end), els_cmds]
         Ok(())
     }
 }
