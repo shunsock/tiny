@@ -2,8 +2,12 @@ mod ast;
 mod data_type;
 mod parser;
 mod tokenizer;
+mod compiler;
+mod opcode;
 
 use ast::Stmt;
+use compiler::{Compiler, compile_error_to_message};
+use opcode::OpCode;
 use parser::{Parser, parse_error_to_message};
 use std::env;
 use std::process::exit;
@@ -26,5 +30,12 @@ fn main() {
         println!("{}", parse_error_to_message(e));
         exit(1)
     });
-    println!("{:?}", ast);
+    println!("{:?}", ast.clone());
+
+    let mut compiler = Compiler::new();
+    let opcodes: Vec<OpCode> = compiler.compile_stmt(&ast).unwrap_or_else(|e|{
+        println!("{}", compile_error_to_message(e));
+        exit(1)
+    });
+    println!("{:?}", opcodes);
 }
