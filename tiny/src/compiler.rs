@@ -1,6 +1,6 @@
-use crate::ast::{BinaryOperation, Expr, Stmt};
-use crate::value_object::opcode::OpCode;
 use crate::tiny_object::TinyObject;
+use crate::value_object::ast::{BinaryOperation, Expr, Stmt};
+use crate::value_object::opcode::OpCode;
 
 #[derive(Debug)]
 pub enum CompileError {

@@ -1,19 +1,18 @@
-mod ast;
 mod compiler;
 mod parser;
 mod tiny_object;
 mod tokenizer;
-mod vm;
 mod value_object;
+mod vm;
 
-use crate::vm::{VM, runtime_error_to_message};
-use ast::Stmt;
 use compiler::{Compiler, compile_error_to_message};
-use value_object::opcode::OpCode;
 use parser::{Parser, parse_error_to_message};
 use std::env;
 use std::process::exit;
 use tokenizer::{Token, Tokenizer, tokenize_error_to_message};
+use value_object::ast::Stmt;
+use value_object::opcode::OpCode;
+use vm::{VM, runtime_error_to_message};
 
 fn main() {
     let args: Vec<String> = env::args().collect();

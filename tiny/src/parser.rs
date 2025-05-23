@@ -1,5 +1,5 @@
-use crate::ast::{BinaryOperation, Expr, Stmt};
 use crate::tokenizer::{Token, token_to_string};
+use crate::value_object::ast::{BinaryOperation, Expr, Stmt};
 
 #[derive(Debug)]
 pub enum ParseError {

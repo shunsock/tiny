@@ -1,5 +1,5 @@
-use crate::value_object::opcode::OpCode;
 use crate::tiny_object::TinyObject;
+use crate::value_object::opcode::OpCode;
 
 #[derive(Debug)]
 pub enum RuntimeError {
