@@ -9,9 +9,10 @@ use compiler::{Compiler, compile_error_to_message};
 use parser::{Parser, parse_error_to_message};
 use std::env;
 use std::process::exit;
-use tokenizer::{Token, Tokenizer, tokenize_error_to_message};
+use tokenizer::{Tokenizer, tokenize_error_to_message};
 use value_object::ast::Stmt;
 use value_object::opcode::OpCode;
+use value_object::token::Token;
 use vm::{VM, runtime_error_to_message};
 
 fn main() {
