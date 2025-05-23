@@ -1,4 +1,4 @@
-use crate::tiny_object::TinyObject;
+use super::tiny_object::TinyObject;
 
 #[derive(Debug, Clone)]
 pub enum OpCode {
