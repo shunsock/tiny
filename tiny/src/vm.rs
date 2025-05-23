@@ -1,4 +1,4 @@
-use crate::opcode::OpCode;
+use crate::value_object::opcode::OpCode;
 use crate::tiny_object::TinyObject;
 
 #[derive(Debug)]

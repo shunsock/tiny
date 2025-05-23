@@ -1,15 +1,15 @@
 mod ast;
 mod compiler;
-mod opcode;
 mod parser;
 mod tiny_object;
 mod tokenizer;
 mod vm;
+mod value_object;
 
 use crate::vm::{VM, runtime_error_to_message};
 use ast::Stmt;
 use compiler::{Compiler, compile_error_to_message};
-use opcode::OpCode;
+use value_object::opcode::OpCode;
 use parser::{Parser, parse_error_to_message};
 use std::env;
 use std::process::exit;
