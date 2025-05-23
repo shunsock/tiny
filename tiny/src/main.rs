@@ -1,6 +1,5 @@
 mod compiler;
 mod parser;
-mod tiny_object;
 mod tokenizer;
 mod value_object;
 mod vm;
