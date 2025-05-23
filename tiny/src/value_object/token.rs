@@ -4,6 +4,7 @@ pub enum Token {
     KeywordPlus,
     KeywordQuestion,
     LiteralInt(i32),
+    LiteralFloat(f32),
     LiteralBool(bool),
 }
 
@@ -13,6 +14,7 @@ pub fn token_to_string(t: Token) -> String {
         Token::KeywordPlus => String::from("+"),
         Token::KeywordQuestion => String::from("?"),
         Token::LiteralInt(i) => format!("{}", i),
+        Token::LiteralFloat(f) => format!("{}", f),
         Token::LiteralBool(b) => format!("{}", b),
     }
 }

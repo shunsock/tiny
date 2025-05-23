@@ -49,14 +49,14 @@ impl Tokenizer {
                 tokens.push(Token::KeywordQuestion);
                 Self::tokenize_recursive(rest, tokens)
             }
-            c if c.is_ascii_digit() => match parse_int_token(stream, c) {
+            c if c.is_whitespace() => Self::tokenize_recursive(rest, tokens),
+            c if c.is_ascii_digit() || c == '-' => match parse_int_token(stream, c) {
                 Ok((token, rest)) => {
                     tokens.push(token);
                     Self::tokenize_recursive(rest, tokens)
                 }
                 Err(e) => Err(e),
             },
-            c if c.is_whitespace() => Self::tokenize_recursive(rest, tokens),
             c if c.is_ascii() => match parse_str_token(stream, c) {
                 Ok((token, rest)) => {
                     tokens.push(token);
@@ -70,21 +70,38 @@ impl Tokenizer {
 }
 
 fn parse_int_token(stream: &str, first: char) -> Result<(Token, &str), TokenizeError> {
-    let mut num = first.to_string();
-    let mut consumed = first.len_utf8();
+    let mut numeric: String = first.to_string();
+    let mut consumed: usize = first.len_utf8();
+    let mut is_float: bool = false;
 
     for (_, c) in stream[consumed..].char_indices() {
-        if c.is_ascii_digit() {
-            num.push(c);
-            consumed += c.len_utf8();
-        } else {
-            break;
+        match c {
+            '0'..='9' => {
+                numeric.push(c);
+                consumed += c.len_utf8();
+            }
+            '.' => {
+                is_float = true;
+                numeric.push(c);
+                consumed += c.len_utf8();
+            }
+            _ => break,
         }
     }
 
-    match num.parse::<i32>() {
-        Ok(n) => Ok((Token::LiteralInt(n), &stream[consumed..])),
-        Err(_) => Err(TokenizeError::ParseIntError),
+    match is_float {
+        true => {
+            let n: f32 = numeric
+                .parse::<f32>()
+                .map_err(|_| TokenizeError::ParseIntError)?;
+            Ok((Token::LiteralFloat(n), &stream[consumed..]))
+        }
+        false => {
+            let n: i32 = numeric
+                .parse::<i32>()
+                .map_err(|_| TokenizeError::ParseIntError)?;
+            Ok((Token::LiteralInt(n), &stream[consumed..]))
+        }
     }
 }
 

@@ -49,13 +49,22 @@ impl VM {
                         (TinyObject::Int(a), TinyObject::Int(b)) => {
                             self.stack.push(TinyObject::Int(a + b));
                         }
+                        (TinyObject::Float(a), TinyObject::Int(b)) => {
+                            self.stack.push(TinyObject::Float(a + b as f32));
+                        }
+                        (TinyObject::Int(a), TinyObject::Float(b)) => {
+                            self.stack.push(TinyObject::Float(a as f32 + b));
+                        }
+                        (TinyObject::Float(a), TinyObject::Float(b)) => {
+                            self.stack.push(TinyObject::Float(a + b));
+                        }
                         _ => return Err(RuntimeError::InvalidOperation),
                     }
                     self.pc += 1;
                 }
                 OpCode::JumpIfFalse(target) => {
                     let cond: TinyObject = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
-                    if Self::evaluate_condition(cond) == false {
+                    if Self::evaluate_condition(cond)? == false {
                         if target > self.code.len() {
                             return Err(RuntimeError::InvalidJump);
                         }
@@ -80,10 +89,11 @@ impl VM {
         Ok(self.stack.last().cloned())
     }
 
-    fn evaluate_condition(obj: TinyObject) -> bool {
+    fn evaluate_condition(obj: TinyObject) -> Result<bool, RuntimeError> {
         match obj {
-            TinyObject::Int(n) => n > 0,
-            TinyObject::Bool(b) => b,
+            TinyObject::Int(n) => Ok(n > 0),
+            TinyObject::Bool(b) => Ok(b),
+            _ => Err(RuntimeError::InvalidOperation),
         }
     }
 }
