@@ -5,7 +5,7 @@ use crate::value_object::tiny_object::TinyObject;
 pub enum RuntimeError {
     StackUnderflow,
     InvalidJump,
-    InvalidOperation,
+    InvalidOperation(String),
 }
 
 pub fn runtime_error_to_message(e: RuntimeError) -> String {
@@ -14,8 +14,8 @@ pub fn runtime_error_to_message(e: RuntimeError) -> String {
             "stack underflow: not enough values on the stack".to_string()
         }
         RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
-        RuntimeError::InvalidOperation => {
-            "invalid operation: jump target is out of bounds".to_string()
+        RuntimeError::InvalidOperation(msg) => {
+            format!("invalid operation: {}", msg)
         }
     }
 }
@@ -58,7 +58,9 @@ impl VM {
                         (TinyObject::Float(a), TinyObject::Float(b)) => {
                             self.stack.push(TinyObject::Float(a + b));
                         }
-                        _ => return Err(RuntimeError::InvalidOperation),
+                        (a, b) => return Err(RuntimeError::InvalidOperation(
+                            format!("Execute the Add operation for undefined type combinations. {:?} {:?}", a, b)
+                        )),
                     }
                     self.pc += 1;
                 }
@@ -93,7 +95,9 @@ impl VM {
         match obj {
             TinyObject::Int(n) => Ok(n > 0),
             TinyObject::Bool(b) => Ok(b),
-            _ => Err(RuntimeError::InvalidOperation),
+            _ => Err(RuntimeError::InvalidOperation(
+                format!("Evaluate float value: {:?}", obj).to_string(),
+            )),
         }
     }
 }
