@@ -11,6 +11,7 @@ pub enum Expr {
         els: Box<Expr>,
     },
     Int(i32),
+    Bool(bool),
     BinOp(Box<BinaryOperation>),
 }
 

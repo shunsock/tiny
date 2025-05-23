@@ -4,12 +4,14 @@ use tailcall::tailcall;
 pub enum TokenizeError {
     ParseIntError,
     UnexpectedCharacter(char),
+    UnexpectedKeyword(String),
 }
 
 pub fn tokenize_error_to_message(e: TokenizeError) -> String {
     match e {
         TokenizeError::ParseIntError => "Failed to parse int".to_string(),
         TokenizeError::UnexpectedCharacter(c) => format!("Unexpected character: {}", c),
+        TokenizeError::UnexpectedKeyword(k) => format!("Unexpected keyword: {}", k),
     }
 }
 
@@ -55,6 +57,13 @@ impl Tokenizer {
                 Err(e) => Err(e),
             },
             c if c.is_whitespace() => Self::tokenize_recursive(rest, tokens),
+            c if c.is_ascii() => match parse_str_token(stream, c) {
+                Ok((token, rest)) => {
+                    tokens.push(token);
+                    Self::tokenize_recursive(rest, tokens)
+                }
+                Err(e) => Err(e),
+            }
             c => Err(TokenizeError::UnexpectedCharacter(c)),
         }
     }
@@ -76,5 +85,25 @@ fn parse_int_token(stream: &str, first: char) -> Result<(Token, &str), TokenizeE
     match num.parse::<i32>() {
         Ok(n) => Ok((Token::LiteralInt(n), &stream[consumed..])),
         Err(_) => Err(TokenizeError::ParseIntError),
+    }
+}
+
+fn parse_str_token(stream: &str, first: char) -> Result<(Token, &str), TokenizeError> {
+    let mut token_candidate: String = first.to_string();
+    let mut consumed: usize = first.len_utf8();
+
+    for (_, c) in stream[consumed..].char_indices() {
+        if c.is_ascii_alphanumeric() {
+            token_candidate.push(c);
+            consumed += c.len_utf8();
+        } else {
+            break;
+        }
+    }
+
+    match token_candidate.as_str() {
+        "true" => Ok((Token::LiteralBool(true), &stream[consumed..])),
+        "false" => Ok((Token::LiteralBool(false), &stream[consumed..])),
+        _ => Err(TokenizeError::UnexpectedKeyword(token_candidate)),
     }
 }
