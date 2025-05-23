@@ -14,7 +14,9 @@ pub fn runtime_error_to_message(e: RuntimeError) -> String {
             "stack underflow: not enough values on the stack".to_string()
         }
         RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
-        RuntimeError::InvalidOperation => "invalid operation: jump target is out of bounds".to_string(),
+        RuntimeError::InvalidOperation => {
+            "invalid operation: jump target is out of bounds".to_string()
+        }
     }
 }
 

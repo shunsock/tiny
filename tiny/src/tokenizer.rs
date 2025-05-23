@@ -63,7 +63,7 @@ impl Tokenizer {
                     Self::tokenize_recursive(rest, tokens)
                 }
                 Err(e) => Err(e),
-            }
+            },
             c => Err(TokenizeError::UnexpectedCharacter(c)),
         }
     }
