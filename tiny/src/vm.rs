@@ -5,7 +5,7 @@ use crate::value_object::tiny_object::TinyObject;
 pub enum RuntimeError {
     StackUnderflow,
     InvalidJump,
-    InvalidOperation,
+    InvalidOperation(String),
 }
 
 pub fn runtime_error_to_message(e: RuntimeError) -> String {
@@ -14,8 +14,8 @@ pub fn runtime_error_to_message(e: RuntimeError) -> String {
             "stack underflow: not enough values on the stack".to_string()
         }
         RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
-        RuntimeError::InvalidOperation => {
-            "invalid operation: jump target is out of bounds".to_string()
+        RuntimeError::InvalidOperation(msg) => {
+            format!("invalid operation: {}", msg)
         }
     }
 }
@@ -49,13 +49,24 @@ impl VM {
                         (TinyObject::Int(a), TinyObject::Int(b)) => {
                             self.stack.push(TinyObject::Int(a + b));
                         }
-                        _ => return Err(RuntimeError::InvalidOperation),
+                        (TinyObject::Float(a), TinyObject::Int(b)) => {
+                            self.stack.push(TinyObject::Float(a + b as f32));
+                        }
+                        (TinyObject::Int(a), TinyObject::Float(b)) => {
+                            self.stack.push(TinyObject::Float(a as f32 + b));
+                        }
+                        (TinyObject::Float(a), TinyObject::Float(b)) => {
+                            self.stack.push(TinyObject::Float(a + b));
+                        }
+                        (a, b) => return Err(RuntimeError::InvalidOperation(
+                            format!("Execute the Add operation for undefined type combinations. {:?} {:?}", a, b)
+                        )),
                     }
                     self.pc += 1;
                 }
                 OpCode::JumpIfFalse(target) => {
                     let cond: TinyObject = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
-                    if Self::evaluate_condition(cond) == false {
+                    if Self::evaluate_condition(cond)? == false {
                         if target > self.code.len() {
                             return Err(RuntimeError::InvalidJump);
                         }
@@ -80,10 +91,13 @@ impl VM {
         Ok(self.stack.last().cloned())
     }
 
-    fn evaluate_condition(obj: TinyObject) -> bool {
+    fn evaluate_condition(obj: TinyObject) -> Result<bool, RuntimeError> {
         match obj {
-            TinyObject::Int(n) => n > 0,
-            TinyObject::Bool(b) => b,
+            TinyObject::Int(n) => Ok(n > 0),
+            TinyObject::Bool(b) => Ok(b),
+            _ => Err(RuntimeError::InvalidOperation(
+                format!("Evaluate float value: {:?}", obj).to_string(),
+            )),
         }
     }
 }

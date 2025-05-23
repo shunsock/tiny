@@ -104,6 +104,7 @@ impl Parser {
         match self.next() {
             Some(Token::LiteralInt(n)) => Ok(Expr::Int(*n)),
             Some(Token::LiteralBool(b)) => Ok(Expr::Bool(*b)),
+            Some(Token::LiteralFloat(f)) => Ok(Expr::Float(*f)),
             Some(actual) => Err(ParseError::UnexpectedToken {
                 expected: None,
                 actual: actual.clone(),

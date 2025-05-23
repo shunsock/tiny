@@ -12,6 +12,7 @@ pub enum Expr {
     },
     Int(i32),
     Bool(bool),
+    Float(f32),
     BinOp(Box<BinaryOperation>),
 }
 
