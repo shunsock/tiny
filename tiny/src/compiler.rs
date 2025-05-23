@@ -41,6 +41,10 @@ impl Compiler {
                 self.code.push(OpCode::Push(TinyObject::Int(n)));
                 Ok(())
             }
+            Expr::Bool(b) => {
+                self.code.push(OpCode::Push(TinyObject::Bool(b)));
+                Ok(())
+            }
             Expr::BinOp(boxed_op) => self.compile_binop(*boxed_op),
             Expr::If { cond, thn, els } => self.compile_if(*cond, *thn, *els),
         }

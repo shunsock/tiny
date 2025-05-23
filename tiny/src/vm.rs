@@ -5,6 +5,7 @@ use crate::value_object::tiny_object::TinyObject;
 pub enum RuntimeError {
     StackUnderflow,
     InvalidJump,
+    InvalidOperation,
 }
 
 pub fn runtime_error_to_message(e: RuntimeError) -> String {
@@ -13,6 +14,9 @@ pub fn runtime_error_to_message(e: RuntimeError) -> String {
             "stack underflow: not enough values on the stack".to_string()
         }
         RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
+        RuntimeError::InvalidOperation => {
+            "invalid operation: jump target is out of bounds".to_string()
+        }
     }
 }
 
@@ -45,6 +49,7 @@ impl VM {
                         (TinyObject::Int(a), TinyObject::Int(b)) => {
                             self.stack.push(TinyObject::Int(a + b));
                         }
+                        _ => return Err(RuntimeError::InvalidOperation),
                     }
                     self.pc += 1;
                 }
@@ -78,8 +83,7 @@ impl VM {
     fn evaluate_condition(obj: TinyObject) -> bool {
         match obj {
             TinyObject::Int(n) => n > 0,
-            #[allow(unreachable_patterns)]
-            _ => false, // we use this in future
+            TinyObject::Bool(b) => b,
         }
     }
 }

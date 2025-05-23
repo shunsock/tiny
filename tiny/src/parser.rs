@@ -103,6 +103,7 @@ impl Parser {
     fn parse_primary_expr(&mut self) -> Result<Expr, ParseError> {
         match self.next() {
             Some(Token::LiteralInt(n)) => Ok(Expr::Int(*n)),
+            Some(Token::LiteralBool(b)) => Ok(Expr::Bool(*b)),
             Some(actual) => Err(ParseError::UnexpectedToken {
                 expected: None,
                 actual: actual.clone(),
