@@ -74,6 +74,7 @@ impl Parser {
             Ok(expr)
         }
     }
+
     fn parse_if_expr(&mut self, cond: Expr) -> Result<Expr, ParseError> {
         self.expect(&Token::KeywordQuestion)?; // consume '?'
         let thn = self.parse_expr()?;
@@ -88,10 +89,10 @@ impl Parser {
     }
 
     fn parse_add_expr(&mut self) -> Result<Expr, ParseError> {
-        let mut left = self.parse_primary_expr()?;
+        let mut left: Expr = self.parse_term()?;
         while matches!(self.peek(), Some(Token::KeywordPlus)) {
             self.next(); // consume '+'
-            let right = self.parse_primary_expr()?;
+            let right: Expr = self.parse_term()?;
             left = Expr::BinOp(Box::new(BinaryOperation::Add {
                 left: Box::new(left),
                 right: Box::new(right),
@@ -100,11 +101,29 @@ impl Parser {
         Ok(left)
     }
 
+    fn parse_term(&mut self) -> Result<Expr, ParseError> {
+        match self.peek() {
+            Some(Token::ParenLeft) => {
+                self.next(); // consume '('
+                let expr = self.parse_expr()?;
+                self.expect(&Token::ParenRight)?;
+                Ok(expr)
+            }
+            _ => self.parse_primary_expr()
+        }
+    }
+
+
     fn parse_primary_expr(&mut self) -> Result<Expr, ParseError> {
         match self.next() {
             Some(Token::LiteralInt(n)) => Ok(Expr::Int(*n)),
             Some(Token::LiteralBool(b)) => Ok(Expr::Bool(*b)),
             Some(Token::LiteralFloat(f)) => Ok(Expr::Float(*f)),
+            Some(Token::ParenLeft) => {
+                let expr: Expr = self.parse_expr()?;
+                self.expect(&Token::ParenRight)?;
+                Ok(expr)
+            }
             Some(actual) => Err(ParseError::UnexpectedToken {
                 expected: None,
                 actual: actual.clone(),
