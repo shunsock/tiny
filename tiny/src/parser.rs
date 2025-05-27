@@ -12,13 +12,13 @@ pub enum ParseError {
 
 pub fn parse_error_to_message(e: ParseError) -> String {
     match e {
-        ParseError::UnexpectedEOF => "unexpected end of input".to_string(),
+        ParseError::UnexpectedEOF => "Unexpected EOF".to_string(),
         ParseError::UnexpectedToken { expected, actual } => {
             if expected.is_none() {
-                format!("[Unexpected Token] actual: {}", token_to_string(actual))
+                format!("Unexpected Token: actual: {}", token_to_string(actual))
             } else {
                 format!(
-                    "[Unexpected Token] expected: {}, actual: {}",
+                    "Unexpected Token: expected: {}, actual: {}",
                     token_to_string(expected.unwrap()),
                     token_to_string(actual)
                 )
