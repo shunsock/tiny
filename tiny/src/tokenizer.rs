@@ -33,10 +33,18 @@ impl Tokenizer {
         }
 
         let mut chars = stream.chars();
-        let first = chars.next().unwrap();
-        let rest = chars.as_str();
+        let first: char = chars.next().unwrap();
+        let rest: &str = chars.as_str();
 
         match first {
+            '(' => {
+                tokens.push(Token::ParenLeft);
+                Self::tokenize_recursive(rest, tokens)
+            }
+            ')' => {
+                tokens.push(Token::ParenRight);
+                Self::tokenize_recursive(rest, tokens)
+            }
             '+' => {
                 tokens.push(Token::KeywordPlus);
                 Self::tokenize_recursive(rest, tokens)
