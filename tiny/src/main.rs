@@ -3,6 +3,7 @@ mod parser;
 mod tokenizer;
 mod value_object;
 mod vm;
+mod typechecker;
 
 use compiler::{Compiler, compile_error_to_message};
 use parser::{Parser, parse_error_to_message};
