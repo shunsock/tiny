@@ -11,11 +11,11 @@ pub enum RuntimeError {
 pub fn runtime_error_to_message(e: RuntimeError) -> String {
     match e {
         RuntimeError::StackUnderflow => {
-            "stack underflow: not enough values on the stack".to_string()
+            "Stack Underflow: not enough values on the stack".to_string()
         }
-        RuntimeError::InvalidJump => "invalid jump: jump target is out of bounds".to_string(),
+        RuntimeError::InvalidJump => "Invalid Jump: jump target is out of bounds".to_string(),
         RuntimeError::InvalidOperation(msg) => {
-            format!("invalid operation: {}", msg)
+            format!("Invalid Operation: {}", msg)
         }
     }
 }
@@ -96,7 +96,7 @@ impl VM {
             TinyObject::Int(n) => Ok(n > 0),
             TinyObject::Bool(b) => Ok(b),
             _ => Err(RuntimeError::InvalidOperation(
-                format!("Evaluate float value: {:?}", obj).to_string(),
+                format!("Float value can not be used as condition: {:?}", obj).to_string(),
             )),
         }
     }
