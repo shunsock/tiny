@@ -109,10 +109,9 @@ impl Parser {
                 self.expect(&Token::ParenRight)?;
                 Ok(expr)
             }
-            _ => self.parse_primary_expr()
+            _ => self.parse_primary_expr(),
         }
     }
-
 
     fn parse_primary_expr(&mut self) -> Result<Expr, ParseError> {
         match self.next() {

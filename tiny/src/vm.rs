@@ -58,15 +58,18 @@ impl VM {
                         (TinyObject::Float(a), TinyObject::Float(b)) => {
                             self.stack.push(TinyObject::Float(a + b));
                         }
-                        (a, b) => return Err(RuntimeError::InvalidOperation(
-                            format!("Execute the Add operation for undefined type combinations. {:?} {:?}", a, b)
-                        )),
+                        (a, b) => {
+                            return Err(RuntimeError::InvalidOperation(format!(
+                                "Execute the Add operation for undefined type combinations. {:?} {:?}",
+                                a, b
+                            )));
+                        }
                     }
                     self.pc += 1;
                 }
                 OpCode::JumpIfFalse(target) => {
                     let cond: TinyObject = self.stack.pop().ok_or(RuntimeError::StackUnderflow)?;
-                    if Self::evaluate_condition(cond)? == false {
+                    if !Self::evaluate_condition(cond)? {
                         if target > self.code.len() {
                             return Err(RuntimeError::InvalidJump);
                         }
