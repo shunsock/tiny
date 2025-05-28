@@ -1,10 +1,11 @@
 mod compiler;
 mod parser;
 mod tokenizer;
+mod typechecker;
 mod value_object;
 mod vm;
-mod typechecker;
 
+use crate::typechecker::{TypeChecker, typecheck_error_to_message};
 use compiler::{Compiler, compile_error_to_message};
 use parser::{Parser, parse_error_to_message};
 use std::env;
@@ -30,6 +31,11 @@ fn main() {
         exit(1)
     });
     println!("{:?}", ast.clone());
+
+    TypeChecker::typecheck(ast.clone()).unwrap_or_else(|e| {
+        eprintln!("[TypeCheck Error] {}", typecheck_error_to_message(e));
+        exit(1)
+    });
 
     let mut compiler: Compiler = Compiler::new();
     let opcodes: Vec<OpCode> = compiler.compile_stmt(ast).unwrap_or_else(|e| {
