@@ -1,5 +1,9 @@
 #[derive(Debug, Clone)]
 pub enum Stmt {
+    DeclareConstant {
+        name: String,
+        value: Expr,
+    },
     Expr(Expr),
 }
 

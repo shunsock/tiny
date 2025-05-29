@@ -31,6 +31,7 @@ impl Compiler {
                 self.compile_expr(expr)?;
                 // if you use file read mode, you must pop!!
             }
+            Stmt::DeclareConstant { .. } => todo!(),
         }
         Ok(self.code.clone())
     }

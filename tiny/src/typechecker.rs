@@ -23,6 +23,7 @@ impl TypeChecker {
     pub fn typecheck(ast: Stmt) -> Result<Option<TinyType>, TypeCheckError> {
         match ast {
             Stmt::Expr(expr) => Ok(Some(Self::typecheck_expr(expr)?)),
+            Stmt::DeclareConstant { .. } => todo!(),
         }
     }
 
