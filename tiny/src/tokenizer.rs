@@ -129,6 +129,7 @@ fn parse_str_token(stream: &str, first: char) -> Result<(Token, &str), TokenizeE
     match token_candidate.as_str() {
         "true" => Ok((Token::LiteralBool(true), &stream[consumed..])),
         "false" => Ok((Token::LiteralBool(false), &stream[consumed..])),
+        "const" => Ok((Token::KeywordConst, &stream[consumed..])),
         _ => Err(TokenizeError::UnexpectedKeyword(token_candidate)),
     }
 }

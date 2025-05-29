@@ -3,6 +3,7 @@ pub enum Token {
     KeywordColon,
     KeywordPlus,
     KeywordQuestion,
+    KeywordConst,
     ParenLeft,
     ParenRight,
     LiteralInt(i32),
@@ -13,6 +14,7 @@ pub enum Token {
 pub fn token_to_string(t: Token) -> String {
     match t {
         Token::KeywordColon => String::from(":"),
+        Token::KeywordConst => String::from("const"),
         Token::KeywordPlus => String::from("+"),
         Token::KeywordQuestion => String::from("?"),
         Token::ParenLeft => String::from("("),
