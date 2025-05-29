@@ -49,6 +49,10 @@ impl Tokenizer {
                 tokens.push(Token::KeywordPlus);
                 Self::tokenize_recursive(rest, tokens)
             }
+            ';' => {
+                tokens.push(Token::KeywordSemicolon);
+                Self::tokenize_recursive(rest, tokens)
+            }
             ':' => {
                 tokens.push(Token::KeywordColon);
                 Self::tokenize_recursive(rest, tokens)
