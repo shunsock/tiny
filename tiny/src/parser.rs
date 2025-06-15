@@ -62,9 +62,7 @@ impl Parser {
 impl Parser {
     pub fn parse(&mut self) -> Result<Stmt, ParseError> {
         match self.peek() {
-            Some(Token::KeywordConst) => {
-                Ok(Stmt::Expr(self.parse_expr()?))
-            }
+            Some(Token::KeywordConst) => Ok(Stmt::Expr(self.parse_expr()?)),
             _ => {
                 let expr = self.parse_expr()?;
                 Ok(Stmt::Expr(expr))
